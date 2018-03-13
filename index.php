@@ -1,19 +1,34 @@
 <?php
-require_once("/config/config.php");
-require_once("/lib/db.php");
-$conn = db_init($config["host"], $config["duser"], $config["dpw"], $config["dname"]);
-$sql = "";
-// $result = mysqli_query($conn, $sql);
+function print_before_install(){
+    echo("<script>alert('설치가 되지 않았습니다. 설치 페이지로 이동해 주세요.');</script>"); 
+    echo("<a href='setup.php'>설치 페이지로 이동</a>"); 
+}
+
+if(!file_exists('setting.php')){
+    print_before_install();
+    exit;    
+}
+
+require_once('conn.php');
+
+$query = "SELECT name,value FROM hm_admin where name='installed'";
+$result = mysqli_query($db_conn, $query); 
+if ( $result ) { 
+    if (mysqli_num_rows($result)){
+        while ($row = mysqli_fetch_assoc($result)){
+            if($row["value"]){
+                Header("Location:list.php"); 
+            }else{
+                print_before_install();
+            }
+        }
+    }else{
+        print_before_install();
+    }
+    mysqli_free_result($result);
+}else{ 
+    print_before_install();
+}
+
+mysqli_close($db_conn);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    1
-</body>
-</html>
